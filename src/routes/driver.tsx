@@ -23,21 +23,43 @@ export const Route = createFileRoute("/driver")({
 });
 
 function DriverPage() {
-  const { t, city, lang } = useI18n();
+  const { t, city, setCity, lang, cityName } = useI18n();
   const buses = useLiveBuses(1200, city);
   const bus = buses[0];
   if (!bus) return null;
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
-      <header className="mb-6 flex items-center justify-between">
+      <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold md:text-3xl">{t("driver_title")}</h1>
           <p className="text-sm text-muted-foreground">{t("driver_sub")}</p>
         </div>
-        <Badge style={{ background: bus.color }} className="text-white">
-          {t("bus")} {bus.number}
-        </Badge>
+        <div className="flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2">
+                <Building2 className="h-4 w-4" />
+                {cityName(city)}
+                <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="max-h-72 overflow-y-auto">
+              {CITIES.map((c) => (
+                <DropdownMenuItem
+                  key={c.id}
+                  onClick={() => setCity(c.id as CityId)}
+                  className={city === c.id ? "bg-accent font-medium" : ""}
+                >
+                  {cityName(c.id as CityId)}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Badge style={{ background: bus.color }} className="text-white">
+            {t("bus")} {bus.number}
+          </Badge>
+        </div>
       </header>
 
       <Card className="mb-6 overflow-hidden">
