@@ -17,9 +17,8 @@ export const Route = createFileRoute("/driver")({
 });
 
 function DriverPage() {
-  const { t } = useI18n();
-  const buses = useLiveBuses(1200);
-  // Assume the driver is on the first bus.
+  const { t, city } = useI18n();
+  const buses = useLiveBuses(1200, city);
   const bus = buses[0];
   if (!bus) return null;
 
@@ -73,7 +72,7 @@ function DriverPage() {
                     : "bg-danger animate-pulse"
               }`}
             >
-              {bus.footboardStatus === "safe" ? "OK" : bus.footboardStatus === "warn" ? "⚠" : "!"}
+              {bus.footboardStatus === "safe" ? t("status_ok") : bus.footboardStatus === "warn" ? "⚠" : "!"}
             </div>
             <div>
               <div className="text-sm font-medium">
@@ -84,8 +83,8 @@ function DriverPage() {
                     : t("status_danger")}
               </div>
               <div className="text-xs text-muted-foreground">
-                {t("buzzer")}: {bus.footboardStatus === "safe" ? "OFF" : "ON"} · {t("motion")}:{" "}
-                {bus.footboardStatus === "danger" ? "RESTRICTED" : "NORMAL"}
+                {t("buzzer")}: {bus.footboardStatus === "safe" ? t("status_off") : t("status_on")} · {t("motion")}:{" "}
+                {bus.footboardStatus === "danger" ? t("status_restricted") : t("status_normal")}
               </div>
             </div>
           </div>
