@@ -1,13 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useI18n } from "@/lib/i18n";
 import { useLiveBuses } from "@/lib/hooks";
-import { Bus, Users, Activity, AlertTriangle } from "lucide-react";
 import { BusMap } from "@/components/BusMap";
-import { getCity } from "@/lib/buses";
+import { getCity, CITIES, type CityId } from "@/lib/buses";
 import { translatePlace } from "@/lib/places";
+import { Bus, Users, Activity, AlertTriangle, Building2, ChevronDown } from "lucide-react";
+import {
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
