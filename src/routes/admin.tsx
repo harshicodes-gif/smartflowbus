@@ -20,7 +20,7 @@ export const Route = createFileRoute("/admin")({
 });
 
 function AdminPage() {
-  const { t, city, cityName } = useI18n();
+  const { t, city, cityName, lang } = useI18n();
   const buses = useLiveBuses(1500, city);
 
   const totalPassengers = buses.reduce((a, b) => a + b.passengers, 0);
