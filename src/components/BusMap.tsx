@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ROUTES, type LiveBus } from "@/lib/buses";
 import { useI18n } from "@/lib/i18n";
+import { translatePlace, translateRouteLabel } from "@/lib/places";
 
 interface Props {
   buses: LiveBus[];
