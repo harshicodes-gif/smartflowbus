@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { computeLiveBuses, type LiveBus } from "./buses";
+import { computeLiveBuses, type CityId, type LiveBus } from "./buses";
 
-export function useLiveBuses(intervalMs = 1500): LiveBus[] {
-  const [buses, setBuses] = useState<LiveBus[]>(() => computeLiveBuses(Date.now()));
+export function useLiveBuses(intervalMs = 1500, cityId?: CityId): LiveBus[] {
+  const [buses, setBuses] = useState<LiveBus[]>(() => computeLiveBuses(Date.now(), cityId));
   useEffect(() => {
-    const id = setInterval(() => setBuses(computeLiveBuses(Date.now())), intervalMs);
+    setBuses(computeLiveBuses(Date.now(), cityId));
+    const id = setInterval(() => setBuses(computeLiveBuses(Date.now(), cityId)), intervalMs);
     return () => clearInterval(id);
-  }, [intervalMs]);
+  }, [intervalMs, cityId]);
   return buses;
 }
 
@@ -15,7 +16,6 @@ export function useUserLocation(): { coords: [number, number] | null; error: str
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     if (typeof navigator === "undefined" || !navigator.geolocation) {
-      // Fallback to Hyderabad center.
       setCoords([17.4126, 78.4734]);
       return;
     }
