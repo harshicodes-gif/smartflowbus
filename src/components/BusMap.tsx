@@ -61,14 +61,14 @@ function BusMapInner({
     });
   }
 
-  function FitToBounds({ points, key }: { points: [number, number][]; key: string }) {
+  function FitToBounds({ points, boundsKey }: { points: [number, number][]; boundsKey: string }) {
     const map = useMap();
     const lastKey = useRef<string>("");
     useEffect(() => {
-      if (points.length === 0 || lastKey.current === key) return;
-      lastKey.current = key;
+      if (points.length === 0 || lastKey.current === boundsKey) return;
+      lastKey.current = boundsKey;
       map.fitBounds(L.latLngBounds(points), { padding: [30, 30] });
-    }, [map, key, points]);
+    }, [map, boundsKey, points]);
     return null;
   }
 
@@ -87,7 +87,7 @@ function BusMapInner({
           attribution='&copy; OpenStreetMap'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <FitToBounds points={fitPoints} key={fitKey} />
+        <FitToBounds points={fitPoints} boundsKey={fitKey} />
 
         {showAllRoutes && visibleRoutes.map((r) => (
           <Polyline
