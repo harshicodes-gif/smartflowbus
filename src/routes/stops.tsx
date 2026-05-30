@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useI18n } from "@/lib/i18n";
 import { useUserLocation } from "@/lib/hooks";
 import { allStops, haversineKm } from "@/lib/buses";
+import { translatePlace } from "@/lib/places";
 
 export const Route = createFileRoute("/stops")({
   head: () => ({
@@ -18,7 +19,7 @@ export const Route = createFileRoute("/stops")({
 });
 
 function StopsPage() {
-  const { t, city, cityName } = useI18n();
+  const { t, city, cityName, lang } = useI18n();
   const { coords } = useUserLocation();
   const stops = useMemo(() => {
     const all = allStops(city);
@@ -46,7 +47,7 @@ function StopsPage() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-3">
-                    <h3 className="font-semibold">{s.name}</h3>
+                    <h3 className="font-semibold">{translatePlace(s.name, lang)}</h3>
                     <Badge variant="outline" className="gap-1">
                       <Navigation className="h-3 w-3" />
                       {s.distKm.toFixed(2)} km

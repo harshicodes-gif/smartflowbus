@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ROUTES, type LiveBus } from "@/lib/buses";
 import { useI18n } from "@/lib/i18n";
+import { translatePlace, translateRouteLabel } from "@/lib/places";
 
 interface Props {
   buses: LiveBus[];
@@ -44,7 +45,7 @@ function BusMapInner({
   buses, height = 480, focusBusRouteId, userLocation, showAllRoutes = true,
   center, L, RL,
 }: Props & { L: typeof import("leaflet"); RL: typeof import("react-leaflet") }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { MapContainer, TileLayer, CircleMarker, Polyline, Popup, Marker, useMap } = RL;
 
   // Restrict drawn routes to ones present in the visible bus set (city scope).
@@ -111,7 +112,7 @@ function BusMapInner({
             >
               <Popup>
                 <div style={{ fontSize: 12 }}>
-                  <div style={{ fontWeight: 600 }}>{s.name}</div>
+                  <div style={{ fontWeight: 600 }}>{translatePlace(s.name, lang)}</div>
                   <div style={{ opacity: 0.7 }}>{t("route")} {r.number}</div>
                 </div>
               </Popup>
@@ -128,7 +129,7 @@ function BusMapInner({
             <Popup>
               <div style={{ fontSize: 12, lineHeight: 1.4 }}>
                 <div style={{ fontWeight: 600 }}>{t("bus")} {b.number}</div>
-                <div style={{ opacity: 0.7 }}>{b.name}</div>
+                <div style={{ opacity: 0.7 }}>{translateRouteLabel(b.name, lang)}</div>
                 <div>{t("eta")}: {b.etaMin} {t("min")} · {b.speedKmh} km/h</div>
                 <div>{t("passengers")}: {b.passengers}/{b.capacity}</div>
               </div>

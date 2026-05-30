@@ -7,6 +7,7 @@ import { useLiveBuses } from "@/lib/hooks";
 import { Bus, Users, Activity, AlertTriangle } from "lucide-react";
 import { BusMap } from "@/components/BusMap";
 import { getCity } from "@/lib/buses";
+import { translatePlace } from "@/lib/places";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/admin")({
 });
 
 function AdminPage() {
-  const { t, city, cityName } = useI18n();
+  const { t, city, cityName, lang } = useI18n();
   const buses = useLiveBuses(1500, city);
 
   const totalPassengers = buses.reduce((a, b) => a + b.passengers, 0);
@@ -58,9 +59,9 @@ function AdminPage() {
                 >
                   {b.number}
                 </div>
-                <span className="truncate font-medium">{b.from}→{b.to}</span>
+                <span className="truncate font-medium">{translatePlace(b.from, lang)}→{translatePlace(b.to, lang)}</span>
               </div>
-              <div className="col-span-3 text-muted-foreground truncate">{t("next_stop")}: {b.nextStop}</div>
+              <div className="col-span-3 text-muted-foreground truncate">{t("next_stop")}: {translatePlace(b.nextStop, lang)}</div>
               <div className="col-span-3">
                 <Progress value={b.occupancy * 100} />
               </div>

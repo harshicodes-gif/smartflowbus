@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useI18n } from "@/lib/i18n";
 import { useLiveBuses } from "@/lib/hooks";
+import { translatePlace, translateRouteLabel } from "@/lib/places";
 import { Bus, Users, Gauge, MapPin, AlertTriangle } from "lucide-react";
 
 export const Route = createFileRoute("/driver")({
@@ -17,7 +18,7 @@ export const Route = createFileRoute("/driver")({
 });
 
 function DriverPage() {
-  const { t, city } = useI18n();
+  const { t, city, lang } = useI18n();
   const buses = useLiveBuses(1200, city);
   const bus = buses[0];
   if (!bus) return null;
@@ -37,8 +38,8 @@ function DriverPage() {
       <Card className="mb-6 overflow-hidden">
         <div className="p-6 text-white" style={{ background: "var(--gradient-hero)" }}>
           <div className="text-sm opacity-80">{t("route")}</div>
-          <div className="text-2xl font-semibold">{bus.name}</div>
-          <div className="mt-1 text-sm opacity-80">{t("next_stop")}: {bus.nextStop} · {bus.etaMin} {t("min")}</div>
+          <div className="text-2xl font-semibold">{translateRouteLabel(bus.name, lang)}</div>
+          <div className="mt-1 text-sm opacity-80">{t("next_stop")}: {translatePlace(bus.nextStop, lang)} · {bus.etaMin} {t("min")}</div>
         </div>
         <div className="grid gap-4 p-6 sm:grid-cols-3">
           <Stat icon={Users} label={t("passengers")} value={`${bus.passengers}/${bus.capacity}`} />
