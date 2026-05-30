@@ -24,7 +24,7 @@ export const Route = createFileRoute("/admin")({
 });
 
 function AdminPage() {
-  const { t, city, cityName, lang } = useI18n();
+  const { t, city, setCity, cityName, lang } = useI18n();
   const buses = useLiveBuses(1500, city);
 
   const totalPassengers = buses.reduce((a, b) => a + b.passengers, 0);
@@ -35,9 +35,31 @@ function AdminPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold md:text-3xl">{t("admin_title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("admin_sub")} · {cityName(city)}</p>
+      <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold md:text-3xl">{t("admin_title")}</h1>
+          <p className="text-sm text-muted-foreground">{t("admin_sub")} · {cityName(city)}</p>
+        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="w-fit gap-2">
+              <Building2 className="h-4 w-4" />
+              {cityName(city)}
+              <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="max-h-72 overflow-y-auto">
+            {CITIES.map((c) => (
+              <DropdownMenuItem
+                key={c.id}
+                onClick={() => setCity(c.id as CityId)}
+                className={city === c.id ? "bg-accent font-medium" : ""}
+              >
+                {cityName(c.id as CityId)}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </header>
 
       <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
