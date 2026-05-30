@@ -24,7 +24,7 @@ export const Route = createFileRoute("/tracking")({
 });
 
 function TrackingPage() {
-  const { t, city, cityName } = useI18n();
+  const { t, city, setCity, cityName } = useI18n();
   const buses = useLiveBuses(1200, city);
   const { coords } = useUserLocation();
   const [query, setQuery] = useState("");
