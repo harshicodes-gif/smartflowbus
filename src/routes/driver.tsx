@@ -18,7 +18,7 @@ export const Route = createFileRoute("/driver")({
 });
 
 function DriverPage() {
-  const { t, city } = useI18n();
+  const { t, city, lang } = useI18n();
   const buses = useLiveBuses(1200, city);
   const bus = buses[0];
   if (!bus) return null;
