@@ -1,15 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Search, Bus, MapPin, Shield, Globe, ArrowRight } from "lucide-react";
+import { Search, Bus, MapPin, Shield, Globe, ArrowRight, Building2, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useI18n } from "@/lib/i18n";
 import { useLiveBuses, useUserLocation } from "@/lib/hooks";
-import { getCity } from "@/lib/buses";
+import { getCity, CITIES, type CityId } from "@/lib/buses";
 import { BusMap } from "@/components/BusMap";
 import { BusCard } from "@/components/BusCard";
+import {
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -24,7 +27,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { t, city, cityName } = useI18n();
+  const { t, lang, city, setCity, cityName } = useI18n();
   const buses = useLiveBuses(1500, city);
   const { coords } = useUserLocation();
   const [query, setQuery] = useState("");
@@ -61,9 +64,38 @@ function Index() {
           <h1 className="text-3xl font-bold leading-tight md:text-5xl">{t("hero_title")}</h1>
           <p className="mt-3 max-w-2xl text-base text-white/85 md:text-lg">{t("hero_sub")}</p>
 
+          {/* Prominent city selector */}
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <span className="text-sm text-white/80">{t("select_city")}:</span>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="gap-2 bg-white text-foreground hover:bg-white/90"
+                >
+                  <Building2 className="h-4 w-4" />
+                  {cityName(city)}
+                  <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="max-h-72 overflow-y-auto">
+                {CITIES.map((c) => (
+                  <DropdownMenuItem
+                    key={c.id}
+                    onClick={() => setCity(c.id as CityId)}
+                    className={city === c.id ? "bg-accent font-medium" : ""}
+                  >
+                    {cityName(c.id as CityId)}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
           <form
             onSubmit={(e) => e.preventDefault()}
-            className="mt-6 flex max-w-2xl items-center gap-2 rounded-xl bg-white p-2 shadow-lg"
+            className="mt-5 flex max-w-2xl items-center gap-2 rounded-xl bg-white p-2 shadow-lg"
           >
             <Search className="ml-2 h-4 w-4 text-muted-foreground" />
             <Input

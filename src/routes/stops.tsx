@@ -1,12 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
-import { MapPin, Navigation } from "lucide-react";
+import { MapPin, Navigation, Building2, ChevronDown } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { useUserLocation } from "@/lib/hooks";
-import { allStops, haversineKm } from "@/lib/buses";
+import { allStops, haversineKm, CITIES, type CityId } from "@/lib/buses";
 import { translatePlace } from "@/lib/places";
+import {
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 export const Route = createFileRoute("/stops")({
   head: () => ({
@@ -19,7 +23,7 @@ export const Route = createFileRoute("/stops")({
 });
 
 function StopsPage() {
-  const { t, city, cityName, lang } = useI18n();
+  const { t, city, setCity, cityName, lang } = useI18n();
   const { coords } = useUserLocation();
   const stops = useMemo(() => {
     const all = allStops(city);
@@ -31,9 +35,31 @@ function StopsPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold md:text-3xl">{t("stops_title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("stops_sub")} · {cityName(city)}</p>
+      <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold md:text-3xl">{t("stops_title")}</h1>
+          <p className="text-sm text-muted-foreground">{t("stops_sub")} · {cityName(city)}</p>
+        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="w-fit gap-2">
+              <Building2 className="h-4 w-4" />
+              {cityName(city)}
+              <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="max-h-72 overflow-y-auto">
+            {CITIES.map((c) => (
+              <DropdownMenuItem
+                key={c.id}
+                onClick={() => setCity(c.id as CityId)}
+                className={city === c.id ? "bg-accent font-medium" : ""}
+              >
+                {cityName(c.id as CityId)}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </header>
 
       <div className="space-y-3">
