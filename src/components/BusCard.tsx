@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { useI18n } from "@/lib/i18n";
+import { translatePlace, translateRouteLabel } from "@/lib/places";
 import type { LiveBus } from "@/lib/buses";
 import { Users, Clock, Gauge, MapPin } from "lucide-react";
 
