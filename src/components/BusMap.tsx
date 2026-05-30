@@ -129,7 +129,7 @@ function BusMapInner({
             <Popup>
               <div style={{ fontSize: 12, lineHeight: 1.4 }}>
                 <div style={{ fontWeight: 600 }}>{t("bus")} {b.number}</div>
-                <div style={{ opacity: 0.7 }}>{b.name}</div>
+                <div style={{ opacity: 0.7 }}>{translateRouteLabel(b.name, lang)}</div>
                 <div>{t("eta")}: {b.etaMin} {t("min")} · {b.speedKmh} km/h</div>
                 <div>{t("passengers")}: {b.passengers}/{b.capacity}</div>
               </div>
