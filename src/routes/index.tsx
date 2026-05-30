@@ -1,15 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Search, Bus, MapPin, Shield, Globe, ArrowRight } from "lucide-react";
+import { Search, Bus, MapPin, Shield, Globe, ArrowRight, Building2, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useI18n } from "@/lib/i18n";
 import { useLiveBuses, useUserLocation } from "@/lib/hooks";
-import { getCity } from "@/lib/buses";
+import { getCity, CITIES, type CityId } from "@/lib/buses";
 import { BusMap } from "@/components/BusMap";
 import { BusCard } from "@/components/BusCard";
+import {
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 export const Route = createFileRoute("/")({
   head: () => ({
