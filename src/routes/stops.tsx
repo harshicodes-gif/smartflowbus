@@ -23,7 +23,7 @@ export const Route = createFileRoute("/stops")({
 });
 
 function StopsPage() {
-  const { t, city, cityName, lang } = useI18n();
+  const { t, city, setCity, cityName, lang } = useI18n();
   const { coords } = useUserLocation();
   const stops = useMemo(() => {
     const all = allStops(city);
