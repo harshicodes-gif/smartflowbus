@@ -59,9 +59,9 @@ function AdminPage() {
                 >
                   {b.number}
                 </div>
-                <span className="truncate font-medium">{b.from}→{b.to}</span>
+                <span className="truncate font-medium">{translatePlace(b.from, lang)}→{translatePlace(b.to, lang)}</span>
               </div>
-              <div className="col-span-3 text-muted-foreground truncate">{t("next_stop")}: {b.nextStop}</div>
+              <div className="col-span-3 text-muted-foreground truncate">{t("next_stop")}: {translatePlace(b.nextStop, lang)}</div>
               <div className="col-span-3">
                 <Progress value={b.occupancy * 100} />
               </div>
