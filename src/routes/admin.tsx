@@ -6,6 +6,7 @@ import { useI18n } from "@/lib/i18n";
 import { useLiveBuses } from "@/lib/hooks";
 import { Bus, Users, Activity, AlertTriangle } from "lucide-react";
 import { BusMap } from "@/components/BusMap";
+import { getCity } from "@/lib/buses";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -18,8 +19,8 @@ export const Route = createFileRoute("/admin")({
 });
 
 function AdminPage() {
-  const { t } = useI18n();
-  const buses = useLiveBuses(1500);
+  const { t, city, cityName } = useI18n();
+  const buses = useLiveBuses(1500, city);
 
   const totalPassengers = buses.reduce((a, b) => a + b.passengers, 0);
   const avgOcc = buses.length
@@ -31,7 +32,7 @@ function AdminPage() {
     <div className="mx-auto max-w-7xl px-4 py-8">
       <header className="mb-6">
         <h1 className="text-2xl font-bold md:text-3xl">{t("admin_title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("admin_sub")}</p>
+        <p className="text-sm text-muted-foreground">{t("admin_sub")} · {cityName(city)}</p>
       </header>
 
       <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -42,11 +43,11 @@ function AdminPage() {
       </div>
 
       <div className="mb-6">
-        <BusMap buses={buses} height={420} />
+        <BusMap buses={buses} center={getCity(city).center} height={420} />
       </div>
 
       <Card className="overflow-hidden">
-        <div className="border-b bg-muted/30 px-4 py-3 text-sm font-semibold">Fleet</div>
+        <div className="border-b bg-muted/30 px-4 py-3 text-sm font-semibold">{t("fleet")}</div>
         <div className="divide-y">
           {buses.map((b) => (
             <div key={b.routeId} className="grid grid-cols-12 items-center gap-3 px-4 py-3 text-sm">

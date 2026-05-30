@@ -7,14 +7,15 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useI18n } from "@/lib/i18n";
 import { useLiveBuses, useUserLocation } from "@/lib/hooks";
+import { getCity } from "@/lib/buses";
 import { BusMap } from "@/components/BusMap";
 import { BusCard } from "@/components/BusCard";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SmartFlow — Live Bus Tracking in Hyderabad" },
-      { name: "description", content: "Track Hyderabad city buses in real time, see crowd levels, find the nearest stop, and travel safely — in 9 Indian languages." },
+      { title: "SmartFlow — Live Bus Tracking across India" },
+      { name: "description", content: "Track city buses across India in real time, see crowd levels, find the nearest stop, and travel safely — in 9 Indian languages." },
       { property: "og:title", content: "SmartFlow — Live Bus Tracking" },
       { property: "og:description", content: "Real-time GPS, crowd insight and footboard safety — in your language." },
     ],
@@ -23,11 +24,12 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { t } = useI18n();
-  const buses = useLiveBuses(1500);
+  const { t, city, cityName } = useI18n();
+  const buses = useLiveBuses(1500, city);
   const { coords } = useUserLocation();
   const [query, setQuery] = useState("");
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
+  const cityCenter = getCity(city).center;
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -54,12 +56,11 @@ function Index() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
             </span>
-            {t("live")} — Hyderabad
+            {t("live")} — {cityName(city)}
           </Badge>
           <h1 className="text-3xl font-bold leading-tight md:text-5xl">{t("hero_title")}</h1>
           <p className="mt-3 max-w-2xl text-base text-white/85 md:text-lg">{t("hero_sub")}</p>
 
-          {/* Search */}
           <form
             onSubmit={(e) => e.preventDefault()}
             className="mt-6 flex max-w-2xl items-center gap-2 rounded-xl bg-white p-2 shadow-lg"
@@ -93,7 +94,7 @@ function Index() {
       <section className="mx-auto max-w-7xl px-4 py-10">
         <div className="mb-4 flex items-end justify-between">
           <div>
-            <h2 className="text-xl font-semibold">{t("nearby_buses")}</h2>
+            <h2 className="text-xl font-semibold">{t("nearby_buses")} — {cityName(city)}</h2>
             <p className="text-sm text-muted-foreground">{t("tracking_sub")}</p>
           </div>
           <Badge variant="outline" className="gap-1">
@@ -108,6 +109,7 @@ function Index() {
               buses={filtered}
               userLocation={coords}
               focusBusRouteId={selectedRouteId}
+              center={cityCenter}
               height={520}
             />
           </div>
@@ -156,7 +158,7 @@ function Index() {
         <div className="mt-8 flex justify-center">
           <Button asChild variant="outline">
             <Link to="/admin">
-              Explore admin dashboard <ArrowRight className="ml-2 h-4 w-4" />
+              {t("explore_admin")} <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
         </div>

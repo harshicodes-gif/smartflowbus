@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useI18n } from "@/lib/i18n";
 import { useLiveBuses, useUserLocation } from "@/lib/hooks";
+import { getCity } from "@/lib/buses";
 import { BusMap } from "@/components/BusMap";
 import { BusCard } from "@/components/BusCard";
 
@@ -12,15 +13,15 @@ export const Route = createFileRoute("/tracking")({
   head: () => ({
     meta: [
       { title: "Live Bus Tracking — SmartFlow" },
-      { name: "description", content: "Live GPS positions of Hyderabad city buses, updated every second." },
+      { name: "description", content: "Live GPS positions of city buses across India, updated every second." },
     ],
   }),
   component: TrackingPage,
 });
 
 function TrackingPage() {
-  const { t } = useI18n();
-  const buses = useLiveBuses(1200);
+  const { t, city, cityName } = useI18n();
+  const buses = useLiveBuses(1200, city);
   const { coords } = useUserLocation();
   const [query, setQuery] = useState("");
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
@@ -37,7 +38,7 @@ function TrackingPage() {
     <div className="mx-auto max-w-7xl px-4 py-8">
       <header className="mb-6">
         <h1 className="text-2xl font-bold md:text-3xl">{t("tracking_title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("tracking_sub")}</p>
+        <p className="text-sm text-muted-foreground">{t("tracking_sub")} · {cityName(city)}</p>
       </header>
 
       <div className="mb-4 flex items-center gap-2 rounded-xl border bg-card p-2">
@@ -56,6 +57,7 @@ function TrackingPage() {
             buses={filtered}
             userLocation={coords}
             focusBusRouteId={selectedRouteId}
+            center={getCity(city).center}
             height={560}
           />
         </div>

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { HYD_CENTER, ROUTES, type LiveBus } from "@/lib/buses";
+import { ROUTES, type LiveBus } from "@/lib/buses";
+import { useI18n } from "@/lib/i18n";
 
 interface Props {
   buses: LiveBus[];
@@ -7,15 +8,16 @@ interface Props {
   focusBusRouteId?: string | null;
   userLocation?: [number, number] | null;
   showAllRoutes?: boolean;
+  center?: [number, number];
 }
 
-// Lazy-loaded leaflet modules to avoid SSR (leaflet touches window at import).
 type LeafletMods = {
   L: typeof import("leaflet");
   RL: typeof import("react-leaflet");
 } | null;
 
 export function BusMap(props: Props) {
+  const { t } = useI18n();
   const [mods, setMods] = useState<LeafletMods>(null);
   useEffect(() => {
     let cancelled = false;
@@ -31,7 +33,7 @@ export function BusMap(props: Props) {
         className="flex items-center justify-center rounded-xl bg-muted text-muted-foreground text-sm"
         style={{ height: props.height ?? 480 }}
       >
-        Loading map…
+        {t("loading_map")}
       </div>
     );
   }
@@ -39,9 +41,15 @@ export function BusMap(props: Props) {
 }
 
 function BusMapInner({
-  buses, height = 480, focusBusRouteId, userLocation, showAllRoutes = true, L, RL,
+  buses, height = 480, focusBusRouteId, userLocation, showAllRoutes = true,
+  center, L, RL,
 }: Props & { L: typeof import("leaflet"); RL: typeof import("react-leaflet") }) {
+  const { t } = useI18n();
   const { MapContainer, TileLayer, CircleMarker, Polyline, Popup, Marker, useMap } = RL;
+
+  // Restrict drawn routes to ones present in the visible bus set (city scope).
+  const visibleRouteIds = new Set(buses.map((b) => b.routeId));
+  const visibleRoutes = ROUTES.filter((r) => visibleRouteIds.has(r.id));
 
   function busIcon(color: string, label: string, status: LiveBus["footboardStatus"]) {
     const ring = status === "danger" ? "#dc2626" : status === "warn" ? "#f59e0b" : "#10b981";
@@ -53,32 +61,35 @@ function BusMapInner({
     });
   }
 
-  function FitToBounds({ points }: { points: [number, number][] }) {
+  function FitToBounds({ points, boundsKey }: { points: [number, number][]; boundsKey: string }) {
     const map = useMap();
-    const did = useRef(false);
+    const lastKey = useRef<string>("");
     useEffect(() => {
-      if (did.current || points.length === 0) return;
-      did.current = true;
+      if (points.length === 0 || lastKey.current === boundsKey) return;
+      lastKey.current = boundsKey;
       map.fitBounds(L.latLngBounds(points), { padding: [30, 30] });
-    }, [map, points]);
+    }, [map, boundsKey, points]);
     return null;
   }
 
   const focused = focusBusRouteId ? buses.find((b) => b.routeId === focusBusRouteId) : null;
   const fitPoints: [number, number][] = focused
-    ? (ROUTES.find((r) => r.id === focused.routeId)?.path ?? [])
+    ? (visibleRoutes.find((r) => r.id === focused.routeId)?.path ?? [])
     : buses.map((b) => [b.lat, b.lng]);
+  const fitKey = focused ? focused.routeId : visibleRoutes.map((r) => r.id).join("-");
+
+  const initialCenter: [number, number] = center ?? (buses[0] ? [buses[0].lat, buses[0].lng] : [20.5937, 78.9629]);
 
   return (
     <div className="overflow-hidden rounded-xl border shadow-[var(--shadow-card)]" style={{ height }}>
-      <MapContainer center={HYD_CENTER} zoom={12} style={{ height: "100%", width: "100%" }} scrollWheelZoom>
+      <MapContainer center={initialCenter} zoom={12} style={{ height: "100%", width: "100%" }} scrollWheelZoom>
         <TileLayer
           attribution='&copy; OpenStreetMap'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <FitToBounds points={fitPoints} />
+        <FitToBounds points={fitPoints} boundsKey={fitKey} />
 
-        {showAllRoutes && ROUTES.map((r) => (
+        {showAllRoutes && visibleRoutes.map((r) => (
           <Polyline
             key={r.id}
             positions={r.path}
@@ -90,7 +101,7 @@ function BusMapInner({
           />
         ))}
 
-        {ROUTES.flatMap((r) =>
+        {visibleRoutes.flatMap((r) =>
           r.stops.map((s) => (
             <CircleMarker
               key={`${r.id}-${s.id}`}
@@ -101,7 +112,7 @@ function BusMapInner({
               <Popup>
                 <div style={{ fontSize: 12 }}>
                   <div style={{ fontWeight: 600 }}>{s.name}</div>
-                  <div style={{ opacity: 0.7 }}>Route {r.number}</div>
+                  <div style={{ opacity: 0.7 }}>{t("route")} {r.number}</div>
                 </div>
               </Popup>
             </CircleMarker>
@@ -116,10 +127,10 @@ function BusMapInner({
           >
             <Popup>
               <div style={{ fontSize: 12, lineHeight: 1.4 }}>
-                <div style={{ fontWeight: 600 }}>Bus {b.number}</div>
+                <div style={{ fontWeight: 600 }}>{t("bus")} {b.number}</div>
                 <div style={{ opacity: 0.7 }}>{b.name}</div>
-                <div>ETA: {b.etaMin} min · {b.speedKmh} km/h</div>
-                <div>Passengers: {b.passengers}/{b.capacity}</div>
+                <div>{t("eta")}: {b.etaMin} {t("min")} · {b.speedKmh} km/h</div>
+                <div>{t("passengers")}: {b.passengers}/{b.capacity}</div>
               </div>
             </Popup>
           </Marker>
@@ -131,7 +142,7 @@ function BusMapInner({
             radius={8}
             pathOptions={{ color: "#2563eb", fillColor: "#3b82f6", fillOpacity: 0.8, weight: 2 }}
           >
-            <Popup>You are here</Popup>
+            <Popup>{t("you_are_here")}</Popup>
           </CircleMarker>
         )}
       </MapContainer>

@@ -24,8 +24,8 @@ const statusStyles: Record<LiveBus["footboardStatus"], { bg: string; label: stri
 };
 
 function SafetyPage() {
-  const { t } = useI18n();
-  const buses = useLiveBuses(1200);
+  const { t, city, cityName } = useI18n();
+  const buses = useLiveBuses(1200, city);
   const danger = buses.filter((b) => b.footboardStatus === "danger").length;
   const warn = buses.filter((b) => b.footboardStatus === "warn").length;
   const safe = buses.filter((b) => b.footboardStatus === "safe").length;
@@ -34,7 +34,7 @@ function SafetyPage() {
     <div className="mx-auto max-w-6xl px-4 py-8">
       <header className="mb-6">
         <h1 className="text-2xl font-bold md:text-3xl">{t("safety_title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("safety_sub")}</p>
+        <p className="text-sm text-muted-foreground">{t("safety_sub")} · {cityName(city)}</p>
       </header>
 
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
@@ -83,13 +83,13 @@ function SafetyPage() {
                     <Volume2 className="h-3 w-3" /> {t("buzzer")}
                   </div>
                   <div className="font-medium">
-                    {b.footboardStatus === "safe" ? "OFF" : "ON"}
+                    {b.footboardStatus === "safe" ? t("status_off") : t("status_on")}
                   </div>
                 </div>
                 <div className={`rounded-md border px-2 py-1.5 ${b.footboardStatus === "danger" ? "border-danger bg-danger/10" : ""}`}>
                   <div className="text-muted-foreground">{t("motion")}</div>
                   <div className="font-medium">
-                    {b.footboardStatus === "danger" ? "RESTRICTED" : `${b.speedKmh} km/h`}
+                    {b.footboardStatus === "danger" ? t("status_restricted") : `${b.speedKmh} km/h`}
                   </div>
                 </div>
               </div>

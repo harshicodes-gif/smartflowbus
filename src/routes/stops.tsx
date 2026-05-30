@@ -11,28 +11,28 @@ export const Route = createFileRoute("/stops")({
   head: () => ({
     meta: [
       { title: "Nearest Bus Stops — SmartFlow" },
-      { name: "description", content: "Find bus stops near you in Hyderabad with walking distance and routes." },
+      { name: "description", content: "Find bus stops near you with walking distance and routes." },
     ],
   }),
   component: StopsPage,
 });
 
 function StopsPage() {
-  const { t } = useI18n();
+  const { t, city, cityName } = useI18n();
   const { coords } = useUserLocation();
   const stops = useMemo(() => {
-    const all = allStops();
+    const all = allStops(city);
     if (!coords) return all.map((s) => ({ ...s, distKm: 0 }));
     return all
       .map((s) => ({ ...s, distKm: haversineKm(coords, [s.lat, s.lng]) }))
       .sort((a, b) => a.distKm - b.distKm);
-  }, [coords]);
+  }, [coords, city]);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       <header className="mb-6">
         <h1 className="text-2xl font-bold md:text-3xl">{t("stops_title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("stops_sub")}</p>
+        <p className="text-sm text-muted-foreground">{t("stops_sub")} · {cityName(city)}</p>
       </header>
 
       <div className="space-y-3">
