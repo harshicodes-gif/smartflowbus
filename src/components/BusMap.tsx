@@ -45,7 +45,7 @@ function BusMapInner({
   buses, height = 480, focusBusRouteId, userLocation, showAllRoutes = true,
   center, L, RL,
 }: Props & { L: typeof import("leaflet"); RL: typeof import("react-leaflet") }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { MapContainer, TileLayer, CircleMarker, Polyline, Popup, Marker, useMap } = RL;
 
   // Restrict drawn routes to ones present in the visible bus set (city scope).
