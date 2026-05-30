@@ -82,11 +82,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "SmartFlow — Smart Bus Tracking for Hyderabad" },
       { name: "description", content: "AI-powered, multilingual real-time bus tracking, crowd monitoring and footboard safety for Hyderabad." },
       { name: "author", content: "SmartFlow" },
-      { property: "og:title", content: "SmartFlow — Smart Bus Tracking" },
-      { property: "og:description", content: "Real-time GPS, crowd insight and footboard safety — in your language." },
+      { property: "og:title", content: "SmartFlow — Smart Bus Tracking for Hyderabad" },
+      { property: "og:description", content: "AI-powered, multilingual real-time bus tracking, crowd monitoring and footboard safety for Hyderabad." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "SmartFlow — Smart Bus Tracking for Hyderabad" },
+      { name: "twitter:description", content: "AI-powered, multilingual real-time bus tracking, crowd monitoring and footboard safety for Hyderabad." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/94ae495a-eb69-4c48-b431-8d842c2ad28c/id-preview-19d6bc0c--2edd1537-21f4-4033-8a9f-ee62cf0181c2.lovable.app-1780121188113.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/94ae495a-eb69-4c48-b431-8d842c2ad28c/id-preview-19d6bc0c--2edd1537-21f4-4033-8a9f-ee62cf0181c2.lovable.app-1780121188113.png" },
     ],
     links: [
       {
