@@ -47,7 +47,7 @@ function StopsPage() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-3">
-                    <h3 className="font-semibold">{s.name}</h3>
+                    <h3 className="font-semibold">{translatePlace(s.name, lang)}</h3>
                     <Badge variant="outline" className="gap-1">
                       <Navigation className="h-3 w-3" />
                       {s.distKm.toFixed(2)} km
