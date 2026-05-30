@@ -1,13 +1,14 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Bus, MapPin, Shield, Gauge, LayoutDashboard, Home, Globe } from "lucide-react";
+import { Bus, MapPin, Shield, Gauge, LayoutDashboard, Home, Globe, Building2 } from "lucide-react";
 import { LANGUAGES, useI18n } from "@/lib/i18n";
+import { CITIES } from "@/lib/buses";
 import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 
 export function Header() {
-  const { t, lang, setLang } = useI18n();
+  const { t, lang, setLang, city, setCity, cityName } = useI18n();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const links = [
     { to: "/", label: t("nav_home"), icon: Home },
@@ -53,6 +54,26 @@ export function Header() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2">
+                <Building2 className="h-4 w-4" />
+                <span className="hidden sm:inline">{cityName(city)}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {CITIES.map((c) => (
+                <DropdownMenuItem
+                  key={c.id}
+                  onClick={() => setCity(c.id)}
+                  className={city === c.id ? "bg-accent" : ""}
+                >
+                  {cityName(c.id)}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2">
