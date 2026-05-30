@@ -20,7 +20,7 @@ export function BusCard({
   onSelect?: (bus: LiveBus) => void;
   selected?: boolean;
 }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   return (
     <Card
       onClick={() => onSelect?.(bus)}
@@ -37,9 +37,9 @@ export function BusCard({
             {bus.number}
           </div>
           <div className="min-w-0">
-            <div className="font-semibold truncate">{bus.name}</div>
+            <div className="font-semibold truncate">{translateRouteLabel(bus.name, lang)}</div>
             <div className="text-xs text-muted-foreground truncate">
-              {bus.from} → {bus.to}
+              {translatePlace(bus.from, lang)} → {translatePlace(bus.to, lang)}
             </div>
           </div>
         </div>
@@ -53,7 +53,7 @@ export function BusCard({
         <Stat icon={Clock} label={t("eta")} value={`${bus.etaMin} ${t("min")}`} />
         <Stat icon={Users} label={t("passengers")} value={`${bus.passengers}/${bus.capacity}`} />
         <Stat icon={Gauge} label={t("speed")} value={`${bus.speedKmh} km/h`} />
-        <Stat icon={MapPin} label={t("next_stop")} value={bus.nextStop} />
+        <Stat icon={MapPin} label={t("next_stop")} value={translatePlace(bus.nextStop, lang)} />
       </div>
     </Card>
   );
