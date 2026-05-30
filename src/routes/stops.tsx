@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useI18n } from "@/lib/i18n";
 import { useUserLocation } from "@/lib/hooks";
 import { allStops, haversineKm } from "@/lib/buses";
+import { translatePlace } from "@/lib/places";
 
 export const Route = createFileRoute("/stops")({
   head: () => ({
