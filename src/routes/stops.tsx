@@ -1,12 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
-import { MapPin, Navigation } from "lucide-react";
+import { MapPin, Navigation, Building2, ChevronDown } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { useUserLocation } from "@/lib/hooks";
-import { allStops, haversineKm } from "@/lib/buses";
+import { allStops, haversineKm, CITIES, type CityId } from "@/lib/buses";
 import { translatePlace } from "@/lib/places";
+import {
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 export const Route = createFileRoute("/stops")({
   head: () => ({
