@@ -236,16 +236,6 @@ export function computeLiveBuses(now: number): LiveBus[] {
   });
 }
 
-export function useLiveBuses(intervalMs = 1500) {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const React = require("react") as typeof import("react");
-  const [buses, setBuses] = React.useState<LiveBus[]>(() => computeLiveBuses(Date.now()));
-  React.useEffect(() => {
-    const id = setInterval(() => setBuses(computeLiveBuses(Date.now())), intervalMs);
-    return () => clearInterval(id);
-  }, [intervalMs]);
-  return buses;
-}
 
 // Hyderabad center for the default map view.
 export const HYD_CENTER: [number, number] = [17.4126, 78.4734];
