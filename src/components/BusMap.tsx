@@ -112,7 +112,7 @@ function BusMapInner({
             >
               <Popup>
                 <div style={{ fontSize: 12 }}>
-                  <div style={{ fontWeight: 600 }}>{s.name}</div>
+                  <div style={{ fontWeight: 600 }}>{translatePlace(s.name, lang)}</div>
                   <div style={{ opacity: 0.7 }}>{t("route")} {r.number}</div>
                 </div>
               </Popup>
