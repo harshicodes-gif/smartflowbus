@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useI18n } from "@/lib/i18n";
 import { useLiveBuses } from "@/lib/hooks";
+import { translatePlace, translateRouteLabel } from "@/lib/places";
 import { Bus, Users, Gauge, MapPin, AlertTriangle } from "lucide-react";
 
 export const Route = createFileRoute("/driver")({
