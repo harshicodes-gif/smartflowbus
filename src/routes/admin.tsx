@@ -7,6 +7,7 @@ import { useLiveBuses } from "@/lib/hooks";
 import { Bus, Users, Activity, AlertTriangle } from "lucide-react";
 import { BusMap } from "@/components/BusMap";
 import { getCity } from "@/lib/buses";
+import { translatePlace } from "@/lib/places";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
