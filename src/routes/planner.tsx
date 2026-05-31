@@ -250,70 +250,59 @@ function Planner() {
 
 function OptionCard({ option, active, onSelect }: { option: Option; active: boolean; onSelect: () => void }) {
   const { t, lang } = useI18n();
-  if (option.kind === "direct") {
-    const { route, fromIdx, toIdx, stopsBetween } = option;
-    return (
-      <Card
-        onClick={onSelect}
-        className={`cursor-pointer p-4 transition ${active ? "border-primary ring-2 ring-primary/30" : "hover:border-muted-foreground/40"}`}
-      >
-        <div className="flex items-center justify-between">
-          <Badge variant="secondary" className="gap-1">
-            <RouteIcon className="h-3 w-3" /> {t("planner_direct")}
-          </Badge>
-          <span
-            className="rounded-md px-2 py-0.5 text-xs font-bold text-white"
-            style={{ background: route.color }}
-          >
-            {route.number}
-          </span>
-        </div>
-        <div className="mt-2 flex items-center gap-2 text-sm font-medium">
-          <span>{translatePlace(route.stops[fromIdx].name, lang)}</span>
-          <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
-          <span>{translatePlace(route.stops[toIdx].name, lang)}</span>
-        </div>
-        <div className="mt-1 text-xs text-muted-foreground">
-          {stopsBetween} {t("planner_stops")} · ~{stopsBetween * 3} {t("min")}
-        </div>
-      </Card>
-    );
-  }
-  const { leg1, leg2, transferName, stopsBetween } = option;
+  const { legs, totalStops } = option;
+  const isDirect = legs.length === 1;
+  const transferCount = legs.length - 1;
+  const minutes = totalStops * 3 + transferCount * 4;
+
   return (
     <Card
       onClick={onSelect}
       className={`cursor-pointer p-4 transition ${active ? "border-primary ring-2 ring-primary/30" : "hover:border-muted-foreground/40"}`}
     >
       <div className="flex items-center justify-between">
-        <Badge variant="outline" className="gap-1">
-          <Repeat className="h-3 w-3" /> {t("planner_transfer")}
-        </Badge>
-        <div className="flex gap-1">
-          <span className="rounded-md px-2 py-0.5 text-xs font-bold text-white" style={{ background: leg1.route.color }}>
-            {leg1.route.number}
-          </span>
-          <span className="rounded-md px-2 py-0.5 text-xs font-bold text-white" style={{ background: leg2.route.color }}>
-            {leg2.route.number}
-          </span>
+        {isDirect ? (
+          <Badge variant="secondary" className="gap-1">
+            <RouteIcon className="h-3 w-3" /> {t("planner_direct")}
+          </Badge>
+        ) : (
+          <Badge variant="outline" className="gap-1">
+            <Repeat className="h-3 w-3" />
+            {transferCount} {transferCount === 1 ? t("planner_transfer_one") : t("planner_transfer_many")}
+          </Badge>
+        )}
+        <div className="flex flex-wrap gap-1">
+          {legs.map((l, i) => (
+            <span
+              key={i}
+              className="rounded-md px-2 py-0.5 text-xs font-bold text-white"
+              style={{ background: l.route.color }}
+            >
+              {l.route.number}
+            </span>
+          ))}
         </div>
       </div>
-      <div className="mt-2 space-y-1 text-sm">
-        <div className="flex items-center gap-2">
-          <span className="font-medium">{translatePlace(leg1.route.stops[leg1.fromIdx].name, lang)}</span>
-          <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
-          <span className="font-medium">{translatePlace(transferName, lang)}</span>
-          <span className="text-xs text-muted-foreground">({leg1.route.number})</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="font-medium">{translatePlace(transferName, lang)}</span>
-          <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
-          <span className="font-medium">{translatePlace(leg2.route.stops[leg2.toIdx].name, lang)}</span>
-          <span className="text-xs text-muted-foreground">({leg2.route.number})</span>
-        </div>
+
+      <div className="mt-3 space-y-1.5 text-sm">
+        {legs.map((l, i) => (
+          <div key={i} className="flex flex-wrap items-center gap-2">
+            <span
+              className="rounded px-1.5 py-0.5 text-[10px] font-bold text-white"
+              style={{ background: l.route.color }}
+            >
+              {l.route.number}
+            </span>
+            <span className="font-medium">{translatePlace(l.route.stops[l.fromIdx].name, lang)}</span>
+            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="font-medium">{translatePlace(l.route.stops[l.toIdx].name, lang)}</span>
+            <span className="text-xs text-muted-foreground">· {l.toIdx - l.fromIdx} {t("planner_stops")}</span>
+          </div>
+        ))}
       </div>
-      <div className="mt-1 text-xs text-muted-foreground">
-        {stopsBetween} {t("planner_stops")} · ~{stopsBetween * 3 + 4} {t("min")}
+
+      <div className="mt-2 text-xs text-muted-foreground">
+        {totalStops} {t("planner_stops")} · ~{minutes} {t("min")}
       </div>
     </Card>
   );
