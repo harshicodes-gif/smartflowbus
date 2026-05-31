@@ -13,6 +13,7 @@ export function Header() {
   const links = [
     { to: "/", label: t("nav_home"), icon: Home },
     { to: "/tracking", label: t("nav_tracking"), icon: Bus },
+    { to: "/planner", label: t("nav_planner"), icon: RouteIcon },
     { to: "/stops", label: t("nav_stops"), icon: MapPin },
     { to: "/safety", label: t("nav_safety"), icon: Shield },
     { to: "/driver", label: t("nav_driver"), icon: Gauge },
