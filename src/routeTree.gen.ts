@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrackingRouteImport } from './routes/tracking'
 import { Route as StopsRouteImport } from './routes/stops'
 import { Route as SafetyRouteImport } from './routes/safety'
+import { Route as PlannerRouteImport } from './routes/planner'
 import { Route as DriverRouteImport } from './routes/driver'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -29,6 +30,11 @@ const StopsRoute = StopsRouteImport.update({
 const SafetyRoute = SafetyRouteImport.update({
   id: '/safety',
   path: '/safety',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlannerRoute = PlannerRouteImport.update({
+  id: '/planner',
+  path: '/planner',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DriverRoute = DriverRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/driver': typeof DriverRoute
+  '/planner': typeof PlannerRoute
   '/safety': typeof SafetyRoute
   '/stops': typeof StopsRoute
   '/tracking': typeof TrackingRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/driver': typeof DriverRoute
+  '/planner': typeof PlannerRoute
   '/safety': typeof SafetyRoute
   '/stops': typeof StopsRoute
   '/tracking': typeof TrackingRoute
@@ -68,20 +76,36 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/driver': typeof DriverRoute
+  '/planner': typeof PlannerRoute
   '/safety': typeof SafetyRoute
   '/stops': typeof StopsRoute
   '/tracking': typeof TrackingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/driver' | '/safety' | '/stops' | '/tracking'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/driver'
+    | '/planner'
+    | '/safety'
+    | '/stops'
+    | '/tracking'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/driver' | '/safety' | '/stops' | '/tracking'
+  to:
+    | '/'
+    | '/admin'
+    | '/driver'
+    | '/planner'
+    | '/safety'
+    | '/stops'
+    | '/tracking'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/driver'
+    | '/planner'
     | '/safety'
     | '/stops'
     | '/tracking'
@@ -91,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   DriverRoute: typeof DriverRoute
+  PlannerRoute: typeof PlannerRoute
   SafetyRoute: typeof SafetyRoute
   StopsRoute: typeof StopsRoute
   TrackingRoute: typeof TrackingRoute
@@ -117,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/safety'
       fullPath: '/safety'
       preLoaderRoute: typeof SafetyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/planner': {
+      id: '/planner'
+      path: '/planner'
+      fullPath: '/planner'
+      preLoaderRoute: typeof PlannerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/driver': {
@@ -147,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   DriverRoute: DriverRoute,
+  PlannerRoute: PlannerRoute,
   SafetyRoute: SafetyRoute,
   StopsRoute: StopsRoute,
   TrackingRoute: TrackingRoute,

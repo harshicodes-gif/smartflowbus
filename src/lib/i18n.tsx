@@ -101,6 +101,17 @@ const en: Dict = {
   city_kolkata: "Kolkata",
   city_pune: "Pune",
   city_ahmedabad: "Ahmedabad",
+  nav_planner: "Route Planner",
+  planner_title: "Plan your bus journey",
+  planner_sub: "Enter your start and destination to see the best direct and transfer bus options.",
+  planner_from_placeholder: "From (stop or area)",
+  planner_to_placeholder: "To (stop or area)",
+  planner_search: "Find buses",
+  planner_unknown_stop: "We couldn't find that stop in the selected city. Try another nearby stop.",
+  planner_no_results: "No bus route found between these stops.",
+  planner_direct: "Direct bus",
+  planner_transfer: "1 transfer",
+  planner_stops: "stops",
 };
 
 // Per-language overrides. Missing keys fall back to English.
@@ -144,6 +155,15 @@ const dicts: Record<Lang, Partial<Dict>> = {
     city_hyderabad: "हैदराबाद", city_delhi: "दिल्ली", city_mumbai: "मुंबई",
     city_bengaluru: "बेंगलुरु", city_chennai: "चेन्नई", city_kolkata: "कोलकाता",
     city_pune: "पुणे", city_ahmedabad: "अहमदाबाद",
+    nav_planner: "रूट प्लानर",
+    planner_title: "अपनी बस यात्रा की योजना बनाएं",
+    planner_sub: "सर्वोत्तम सीधी और ट्रांसफ़र बस विकल्प देखने के लिए शुरुआत और गंतव्य दर्ज करें।",
+    planner_from_placeholder: "कहाँ से (स्टॉप या इलाक़ा)",
+    planner_to_placeholder: "कहाँ तक (स्टॉप या इलाक़ा)",
+    planner_search: "बसें खोजें",
+    planner_unknown_stop: "चयनित शहर में यह स्टॉप नहीं मिला। पास का दूसरा स्टॉप आज़माएं।",
+    planner_no_results: "इन स्टॉप के बीच कोई बस मार्ग नहीं मिला।",
+    planner_direct: "सीधी बस", planner_transfer: "1 ट्रांसफ़र", planner_stops: "स्टॉप",
   },
   te: {
     brand: "స్మార్ట్‌ఫ్లో", tagline: "AI ఆధారిత స్మార్ట్ బస్సు & ప్రయాణికుల భద్రత",
