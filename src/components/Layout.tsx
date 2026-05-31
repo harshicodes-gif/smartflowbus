@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Bus, MapPin, Shield, Gauge, LayoutDashboard, Home, Globe, Building2 } from "lucide-react";
+import { Bus, MapPin, Shield, Gauge, LayoutDashboard, Home, Globe, Building2, Route as RouteIcon } from "lucide-react";
 import { LANGUAGES, useI18n } from "@/lib/i18n";
 import { CITIES } from "@/lib/buses";
 import {
