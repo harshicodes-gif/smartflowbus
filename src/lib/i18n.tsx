@@ -101,6 +101,17 @@ const en: Dict = {
   city_kolkata: "Kolkata",
   city_pune: "Pune",
   city_ahmedabad: "Ahmedabad",
+  nav_planner: "Route Planner",
+  planner_title: "Plan your bus journey",
+  planner_sub: "Enter your start and destination to see the best direct and transfer bus options.",
+  planner_from_placeholder: "From (stop or area)",
+  planner_to_placeholder: "To (stop or area)",
+  planner_search: "Find buses",
+  planner_unknown_stop: "We couldn't find that stop in the selected city. Try another nearby stop.",
+  planner_no_results: "No bus route found between these stops.",
+  planner_direct: "Direct bus",
+  planner_transfer: "1 transfer",
+  planner_stops: "stops",
 };
 
 // Per-language overrides. Missing keys fall back to English.
