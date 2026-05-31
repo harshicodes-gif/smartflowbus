@@ -132,10 +132,8 @@ function Planner() {
   const selected = options[selectedIdx];
   const focusBuses = useMemo(() => {
     if (!selected) return buses;
-    const ids = selected.kind === "direct"
-      ? [selected.route.id]
-      : [selected.leg1.route.id, selected.leg2.route.id];
-    return buses.filter((b) => ids.includes(b.routeId));
+    const ids = new Set(selected.legs.map((l) => l.route.id));
+    return buses.filter((b) => ids.has(b.routeId));
   }, [buses, selected]);
 
   const swap = () => { setFromQ(toQ); setToQ(fromQ); };
