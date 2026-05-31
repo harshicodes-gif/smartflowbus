@@ -378,7 +378,7 @@ function interpolate(path: [number, number][], t: number): [number, number] {
   return path[path.length - 1];
 }
 
-const PHASES = [0, 0.18, 0.42, 0.61, 0.77, 0.33, 0.51, 0.09];
+const PHASES = [0, 0.18, 0.42, 0.61, 0.77, 0.33, 0.51, 0.09, 0.27, 0.68, 0.84, 0.12, 0.45, 0.91, 0.05, 0.58];
 
 export function computeLiveBuses(now: number, cityId?: CityId): LiveBus[] {
   const routes = cityId ? ROUTES.filter((r) => r.cityId === cityId) : ROUTES;
