@@ -24,23 +24,8 @@ export const Route = createFileRoute("/planner")({
   component: Planner,
 });
 
-type DirectOption = {
-  kind: "direct";
-  route: BusRoute;
-  fromIdx: number;
-  toIdx: number;
-  stopsBetween: number;
-};
-
-type TransferOption = {
-  kind: "transfer";
-  leg1: { route: BusRoute; fromIdx: number; transferIdx: number };
-  leg2: { route: BusRoute; transferIdx: number; toIdx: number };
-  transferName: string;
-  stopsBetween: number;
-};
-
-type Option = DirectOption | TransferOption;
+type Leg = { route: BusRoute; fromIdx: number; toIdx: number };
+type Option = { legs: Leg[]; totalStops: number };
 
 function findStop(query: string, cityRoutes: BusRoute[], lang: Parameters<typeof translatePlace>[1]) {
   const q = query.trim().toLowerCase();
@@ -49,7 +34,6 @@ function findStop(query: string, cityRoutes: BusRoute[], lang: Parameters<typeof
   cityRoutes.forEach((r) => r.stops.forEach((s) => {
     if (!stops.has(s.name)) stops.set(s.name, s);
   }));
-  // exact name match (en or translated), else substring
   for (const s of stops.values()) {
     if (s.name.toLowerCase() === q) return s;
     if (translatePlace(s.name, lang).toLowerCase() === q) return s;
@@ -61,58 +45,63 @@ function findStop(query: string, cityRoutes: BusRoute[], lang: Parameters<typeof
   return null;
 }
 
-function planRoutes(fromName: string, toName: string, cityRoutes: BusRoute[]): Option[] {
-  const opts: Option[] = [];
-  // Direct
-  for (const r of cityRoutes) {
-    const fromIdx = r.stops.findIndex((s) => s.name === fromName);
-    const toIdx = r.stops.findIndex((s) => s.name === toName);
-    if (fromIdx !== -1 && toIdx !== -1 && fromIdx < toIdx) {
-      opts.push({ kind: "direct", route: r, fromIdx, toIdx, stopsBetween: toIdx - fromIdx });
-    }
-  }
-  // Transfer (1 hop)
-  if (opts.length < 4) {
-    for (const r1 of cityRoutes) {
-      const fromIdx = r1.stops.findIndex((s) => s.name === fromName);
+// BFS over stops: each "edge" is a single bus leg (any forward segment of one route).
+// Returns options up to maxLegs transfers, sorted by leg count then stop count.
+function planRoutes(fromName: string, toName: string, cityRoutes: BusRoute[], maxLegs = 4): Option[] {
+  if (fromName === toName) return [];
+  const results: Option[] = [];
+  type State = { stop: string; legs: Leg[]; usedRoutes: Set<string>; visitedStops: Set<string> };
+  const queue: State[] = [{
+    stop: fromName, legs: [], usedRoutes: new Set(), visitedStops: new Set([fromName]),
+  }];
+  const bestLegsToStop = new Map<string, number>([[fromName, 0]]);
+
+  while (queue.length) {
+    const cur = queue.shift()!;
+    if (cur.legs.length >= maxLegs) continue;
+    // Try each route that passes through current stop (and we haven't used yet).
+    for (const r of cityRoutes) {
+      if (cur.usedRoutes.has(r.id)) continue;
+      const fromIdx = r.stops.findIndex((s) => s.name === cur.stop);
       if (fromIdx === -1) continue;
-      for (const r2 of cityRoutes) {
-        if (r2.id === r1.id) continue;
-        const toIdx = r2.stops.findIndex((s) => s.name === toName);
-        if (toIdx === -1) continue;
-        // find shared stop after fromIdx on r1 and before toIdx on r2
-        for (let i = fromIdx + 1; i < r1.stops.length; i++) {
-          const s = r1.stops[i];
-          const j = r2.stops.findIndex((x) => x.name === s.name);
-          if (j !== -1 && j < toIdx) {
-            opts.push({
-              kind: "transfer",
-              leg1: { route: r1, fromIdx, transferIdx: i },
-              leg2: { route: r2, transferIdx: j, toIdx },
-              transferName: s.name,
-              stopsBetween: (i - fromIdx) + (toIdx - j),
-            });
-            break;
-          }
+      // Each forward stop on the route is a possible alighting point for this leg.
+      for (let j = fromIdx + 1; j < r.stops.length; j++) {
+        const nextStop = r.stops[j].name;
+        if (cur.visitedStops.has(nextStop)) continue;
+        const legs = [...cur.legs, { route: r, fromIdx, toIdx: j }];
+        if (nextStop === toName) {
+          const totalStops = legs.reduce((sum, l) => sum + (l.toIdx - l.fromIdx), 0);
+          results.push({ legs, totalStops });
+          continue;
         }
+        // Prune: only explore further if we can still beat / equal best known leg count.
+        const nextLegCount = legs.length;
+        const best = bestLegsToStop.get(nextStop) ?? Infinity;
+        if (nextLegCount > best) continue;
+        bestLegsToStop.set(nextStop, Math.min(best, nextLegCount));
+        queue.push({
+          stop: nextStop,
+          legs,
+          usedRoutes: new Set([...cur.usedRoutes, r.id]),
+          visitedStops: new Set([...cur.visitedStops, nextStop]),
+        });
       }
     }
   }
-  // Dedupe transfer combos
+
+  // Dedupe by route-sequence + transfer points.
   const seen = new Set<string>();
-  const unique = opts.filter((o) => {
-    const k = o.kind === "direct"
-      ? `d:${o.route.id}:${o.fromIdx}:${o.toIdx}`
-      : `t:${o.leg1.route.id}:${o.leg2.route.id}:${o.transferName}`;
-    if (seen.has(k)) return false;
-    seen.add(k);
+  const unique = results.filter((o) => {
+    const key = o.legs.map((l) => `${l.route.id}:${l.fromIdx}-${l.toIdx}`).join("|");
+    if (seen.has(key)) return false;
+    seen.add(key);
     return true;
   });
   unique.sort((a, b) => {
-    if (a.kind !== b.kind) return a.kind === "direct" ? -1 : 1;
-    return a.stopsBetween - b.stopsBetween;
+    if (a.legs.length !== b.legs.length) return a.legs.length - b.legs.length;
+    return a.totalStops - b.totalStops;
   });
-  return unique.slice(0, 6);
+  return unique.slice(0, 8);
 }
 
 function Planner() {
