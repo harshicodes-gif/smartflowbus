@@ -111,6 +111,8 @@ const en: Dict = {
   planner_no_results: "No bus route found between these stops.",
   planner_direct: "Direct bus",
   planner_transfer: "1 transfer",
+  planner_transfer_one: "transfer",
+  planner_transfer_many: "transfers",
   planner_stops: "stops",
 };
 
