@@ -239,7 +239,7 @@ function Planner() {
               buses={focusBuses}
               center={cityCenter}
               height={520}
-              focusBusRouteId={selected?.kind === "direct" ? selected.route.id : null}
+              focusBusRouteId={selected && selected.legs.length === 1 ? selected.legs[0].route.id : null}
             />
           </div>
         </div>
