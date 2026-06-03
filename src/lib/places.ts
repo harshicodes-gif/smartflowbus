@@ -215,6 +215,23 @@ const ta: PlaceDict = {
   "Swargate": "ஸ்வர்கேட்", "Kothrud": "கோத்ரூட்",
   "Lal Darwaja": "லால் தர்வாஜா", "Vastrapur": "வஸ்த்ராபூர்",
   "Maninagar": "மணிநகர்", "Bopal": "போபால்",
+  "Paradise": "பாரடைஸ்", "Mehdipatnam": "மெஹ்தீபட்டினம்",
+  "Khairatabad": "கைரதாபாத்", "Patancheru": "பட்டான்சேரு",
+  "Lingampally": "லிங்கம்பள்ளி", "Uppal": "உப்பல்", "Tarnaka": "தர்நாகா",
+  "Mehrauli": "மெஹ்ரௌலி", "Akshardham": "அக்ஷர்தாம்",
+  "Sion": "சியோன்", "Vashi": "வாஷி", "Chembur": "செம்பூர்",
+  "Wadala": "வடாலா", "Mulund": "முளுண்டு", "Thane Stn": "தானே நிலையம்",
+  "Banashankari": "பனசங்கரி", "Koramangala": "கோரமங்கலா",
+  "HSR Layout": "எச்.எஸ்.ஆர் லேஅவுட்",
+  "Parrys": "பாரிஸ்", "Mount Road": "மவுண்ட் ரோடு", "Velachery": "வேளச்சேரி",
+  "Triplicane": "திருவல்லிக்கேணி", "Nungambakkam": "நுங்கம்பாக்கம்",
+  "Vadapalani": "வடபழனி", "Porur": "போரூர்", "Avadi": "ஆவடி",
+  "Ambattur": "அம்பத்தூர்", "Medavakkam": "மேடவாக்கம்",
+  "Sholinganallur": "சோளிங்கநல்லூர்", "Kelambakkam": "கேளம்பாக்கம்",
+  "Jadavpur": "ஜாதவ்பூர்", "Dunlop": "டன்லாப்",
+  "Hadapsar": "ஹடப்சர்", "Katraj": "கத்ராஜ்", "Pimpri": "பிம்ப்ரி",
+  "Sarkhej": "சர்கேஜ்", "Naroda": "நரோடா", "Thaltej": "தல்தேஜ்",
+  "Kankaria": "கங்காரியா",
 };
 
 const kn: PlaceDict = {
