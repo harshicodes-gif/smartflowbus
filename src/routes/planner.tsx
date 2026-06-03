@@ -27,6 +27,34 @@ export const Route = createFileRoute("/planner")({
 type Leg = { route: BusRoute; fromIdx: number; toIdx: number };
 type Option = { legs: Leg[]; totalStops: number };
 
+// Cluster nearby stops (≤600m) into a single transfer hub. This lets
+// "Secunderabad" and "Secunderabad Stn" act as the same interchange point.
+const TRANSFER_RADIUS_KM = 0.6;
+
+function buildClusters(routes: BusRoute[]) {
+  const stopList: { name: string; lat: number; lng: number }[] = [];
+  const seen = new Set<string>();
+  routes.forEach((r) => r.stops.forEach((s) => {
+    if (!seen.has(s.name)) {
+      seen.add(s.name);
+      stopList.push({ name: s.name, lat: s.lat, lng: s.lng });
+    }
+  }));
+  const parent = stopList.map((_, i) => i);
+  const find = (x: number): number => (parent[x] === x ? x : (parent[x] = find(parent[x])));
+  const union = (a: number, b: number) => { const ra = find(a), rb = find(b); if (ra !== rb) parent[ra] = rb; };
+  for (let i = 0; i < stopList.length; i++) {
+    for (let j = i + 1; j < stopList.length; j++) {
+      if (haversineKm([stopList[i].lat, stopList[i].lng], [stopList[j].lat, stopList[j].lng]) < TRANSFER_RADIUS_KM) {
+        union(i, j);
+      }
+    }
+  }
+  const stopToCluster = new Map<string, number>();
+  stopList.forEach((s, i) => stopToCluster.set(s.name, find(i)));
+  return { stopToCluster };
+}
+
 function findStop(query: string, cityRoutes: BusRoute[], lang: Parameters<typeof translatePlace>[1]) {
   const q = query.trim().toLowerCase();
   if (!q) return null;
@@ -45,51 +73,67 @@ function findStop(query: string, cityRoutes: BusRoute[], lang: Parameters<typeof
   return null;
 }
 
-// BFS over stops: each "edge" is a single bus leg (any forward segment of one route).
-// Returns options up to maxLegs transfers, sorted by leg count then stop count.
+// BFS over stop clusters. Each "edge" is one bus leg (any segment of one
+// route, traversable in either direction). Transfers happen at clusters,
+// so nearby stops with slightly different names are interchangeable.
 function planRoutes(fromName: string, toName: string, cityRoutes: BusRoute[], maxLegs = 4): Option[] {
   if (fromName === toName) return [];
+  const { stopToCluster } = buildClusters(cityRoutes);
+  const fromCluster = stopToCluster.get(fromName);
+  const toCluster = stopToCluster.get(toName);
+  if (fromCluster == null || toCluster == null) return [];
+  if (fromCluster === toCluster) return [];
+
+  // Precompute cluster id per route stop.
+  const routeClusters = cityRoutes.map((r) => r.stops.map((s) => stopToCluster.get(s.name)!));
+
   const results: Option[] = [];
-  type State = { stop: string; legs: Leg[]; usedRoutes: Set<string>; visitedStops: Set<string> };
+  type State = { cluster: number; legs: Leg[]; usedRoutes: Set<string>; visited: Set<number> };
   const queue: State[] = [{
-    stop: fromName, legs: [], usedRoutes: new Set(), visitedStops: new Set([fromName]),
+    cluster: fromCluster, legs: [], usedRoutes: new Set(), visited: new Set([fromCluster]),
   }];
-  const bestLegsToStop = new Map<string, number>([[fromName, 0]]);
+  const bestLegsToCluster = new Map<number, number>([[fromCluster, 0]]);
 
   while (queue.length) {
     const cur = queue.shift()!;
     if (cur.legs.length >= maxLegs) continue;
-    // Try each route that passes through current stop (and we haven't used yet).
-    for (const r of cityRoutes) {
+    for (let ri = 0; ri < cityRoutes.length; ri++) {
+      const r = cityRoutes[ri];
       if (cur.usedRoutes.has(r.id)) continue;
-      const fromIdx = r.stops.findIndex((s) => s.name === cur.stop);
-      if (fromIdx === -1) continue;
-      // Each forward stop on the route is a possible alighting point for this leg.
-      for (let j = fromIdx + 1; j < r.stops.length; j++) {
-        const nextStop = r.stops[j].name;
-        if (cur.visitedStops.has(nextStop)) continue;
-        const legs = [...cur.legs, { route: r, fromIdx, toIdx: j }];
-        if (nextStop === toName) {
-          const totalStops = legs.reduce((sum, l) => sum + (l.toIdx - l.fromIdx), 0);
-          results.push({ legs, totalStops });
-          continue;
+      const rc = routeClusters[ri];
+      // All boarding indices on this route that touch the current cluster.
+      const boardIndices: number[] = [];
+      for (let i = 0; i < rc.length; i++) if (rc[i] === cur.cluster) boardIndices.push(i);
+      if (!boardIndices.length) continue;
+
+      for (const fromIdx of boardIndices) {
+        // Alight at any other stop (forward OR backward — buses run both ways).
+        for (let toIdx = 0; toIdx < r.stops.length; toIdx++) {
+          if (toIdx === fromIdx) continue;
+          const nextCluster = rc[toIdx];
+          if (nextCluster === cur.cluster) continue;
+          if (cur.visited.has(nextCluster)) continue;
+          const legs = [...cur.legs, { route: r, fromIdx, toIdx }];
+          if (nextCluster === toCluster) {
+            const totalStops = legs.reduce((s, l) => s + Math.abs(l.toIdx - l.fromIdx), 0);
+            results.push({ legs, totalStops });
+            continue;
+          }
+          const best = bestLegsToCluster.get(nextCluster) ?? Infinity;
+          if (legs.length > best) continue;
+          bestLegsToCluster.set(nextCluster, Math.min(best, legs.length));
+          queue.push({
+            cluster: nextCluster,
+            legs,
+            usedRoutes: new Set([...cur.usedRoutes, r.id]),
+            visited: new Set([...cur.visited, nextCluster]),
+          });
         }
-        // Prune: only explore further if we can still beat / equal best known leg count.
-        const nextLegCount = legs.length;
-        const best = bestLegsToStop.get(nextStop) ?? Infinity;
-        if (nextLegCount > best) continue;
-        bestLegsToStop.set(nextStop, Math.min(best, nextLegCount));
-        queue.push({
-          stop: nextStop,
-          legs,
-          usedRoutes: new Set([...cur.usedRoutes, r.id]),
-          visitedStops: new Set([...cur.visitedStops, nextStop]),
-        });
       }
     }
   }
 
-  // Dedupe by route-sequence + transfer points.
+  // Dedupe by route-sequence + boarding/alighting points.
   const seen = new Set<string>();
   const unique = results.filter((o) => {
     const key = o.legs.map((l) => `${l.route.id}:${l.fromIdx}-${l.toIdx}`).join("|");
@@ -285,20 +329,23 @@ function OptionCard({ option, active, onSelect }: { option: Option; active: bool
       </div>
 
       <div className="mt-3 space-y-1.5 text-sm">
-        {legs.map((l, i) => (
-          <div key={i} className="flex flex-wrap items-center gap-2">
-            <span
-              className="rounded px-1.5 py-0.5 text-[10px] font-bold text-white"
-              style={{ background: l.route.color }}
-            >
-              {l.route.number}
-            </span>
-            <span className="font-medium">{translatePlace(l.route.stops[l.fromIdx].name, lang)}</span>
-            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
-            <span className="font-medium">{translatePlace(l.route.stops[l.toIdx].name, lang)}</span>
-            <span className="text-xs text-muted-foreground">· {l.toIdx - l.fromIdx} {t("planner_stops")}</span>
-          </div>
-        ))}
+        {legs.map((l, i) => {
+          const stopsCount = Math.abs(l.toIdx - l.fromIdx);
+          return (
+            <div key={i} className="flex flex-wrap items-center gap-2">
+              <span
+                className="rounded px-1.5 py-0.5 text-[10px] font-bold text-white"
+                style={{ background: l.route.color }}
+              >
+                {l.route.number}
+              </span>
+              <span className="font-medium">{translatePlace(l.route.stops[l.fromIdx].name, lang)}</span>
+              <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+              <span className="font-medium">{translatePlace(l.route.stops[l.toIdx].name, lang)}</span>
+              <span className="text-xs text-muted-foreground">· {stopsCount} {t("planner_stops")}</span>
+            </div>
+          );
+        })}
       </div>
 
       <div className="mt-2 text-xs text-muted-foreground">
