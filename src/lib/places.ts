@@ -283,6 +283,14 @@ const ml: PlaceDict = {
   "Pune Stn": "പൂനെ സ്റ്റേഷൻ", "Hinjewadi": "ഹിഞ്ചേവാടി",
   "Kothrud": "കോത്രൂഡ്", "Lal Darwaja": "ലാൽ ദർവാജ",
   "Vastrapur": "വസ്ത്രാപൂർ", "Maninagar": "മണിനഗർ", "Bopal": "ബോപാൽ",
+  "Paradise": "പാരഡൈസ്", "Mehdipatnam": "മെഹ്ദിപട്ടണം",
+  "Patancheru": "പടാഞ്ചേരു", "Lingampally": "ലിംഗംപള്ളി",
+  "Uppal": "ഉപ്പൽ", "Mehrauli": "മെഹ്റൗലി",
+  "CST": "സിഎസ്ടി", "Vashi": "വാശി", "Thane Stn": "താനെ സ്റ്റേഷൻ",
+  "Banashankari": "ബനശങ്കരി", "Koramangala": "കോരമംഗല",
+  "Velachery": "വേളച്ചേരി", "Porur": "പോരൂർ",
+  "Pimpri": "പിമ്പ്രി", "Katraj": "കത്രാജ്",
+  "Naroda": "നരോഡ", "Kankaria": "കാങ്കാരിയ",
 };
 
 const bn: PlaceDict = {
