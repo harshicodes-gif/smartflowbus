@@ -254,6 +254,18 @@ const kn: PlaceDict = {
   "Swargate": "ಸ್ವಾರ್‌ಗೇಟ್", "Kothrud": "ಕೊತ್ರೂಡ್",
   "Lal Darwaja": "ಲಾಲ್ ದರ್ವಾಜಾ", "Vastrapur": "ವಸ್ತ್ರಾಪುರ",
   "Maninagar": "ಮಣಿನಗರ", "Bopal": "ಬೋಪಲ್",
+  "Banashankari": "ಬನಶಂಕರಿ", "Yeshwantpur": "ಯಶವಂತಪುರ",
+  "Malleshwaram": "ಮಲ್ಲೇಶ್ವರಂ", "HSR Layout": "ಎಚ್‌ಎಸ್‌ಆರ್ ಲೇಔಟ್",
+  "Sarjapur": "ಸರ್ಜಾಪುರ", "Koramangala": "ಕೋರಮಂಗಲ",
+  "ITPL": "ಐಟಿಪಿಎಲ್", "Lalbagh": "ಲಾಲ್‌ಬಾಗ್",
+  "BTM Layout": "ಬಿಟಿಎಂ ಲೇಔಟ್", "Bommanahalli": "ಬೊಮ್ಮನಹಳ್ಳಿ",
+  "Paradise": "ಪ್ಯಾರಡೈಸ್", "Mehdipatnam": "ಮೆಹದಿಪಟ್ಟಣಂ",
+  "Patancheru": "ಪಟಾನ್‌ಚೆರು", "Lingampally": "ಲಿಂಗಂಪಲ್ಲಿ",
+  "Uppal": "ಉಪ್ಪಲ್", "Mehrauli": "ಮೆಹ್ರೌಲಿ",
+  "Sion": "ಸಿಯೋನ್", "Wadala": "ವಡಾಲ", "Thane Stn": "ಠಾಣೆ ನಿಲ್ದಾಣ",
+  "Velachery": "ವೇಳಚೇರಿ", "Porur": "ಪೋರೂರ್", "Avadi": "ಅವಡಿ",
+  "Hadapsar": "ಹಡಪ್‌ಸರ್", "Katraj": "ಕತ್ರಾಜ್", "Pimpri": "ಪಿಂಪ್ರಿ",
+  "Sarkhej": "ಸರ್‌ಖೇಜ್", "Naroda": "ನರೋಡ", "Kankaria": "ಕಂಕಾರಿಯಾ",
 };
 
 const ml: PlaceDict = {
