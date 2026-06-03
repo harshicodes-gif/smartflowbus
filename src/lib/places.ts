@@ -311,6 +311,17 @@ const bn: PlaceDict = {
   "Pune Stn": "পুনে স্টেশন", "Hinjewadi": "হিঞ্জেওয়াড়ি",
   "Kothrud": "কোথরুদ", "Lal Darwaja": "লাল দরওয়াজা",
   "Vastrapur": "বস্ত্রাপুর", "Maninagar": "মণিনগর", "Bopal": "বোপাল",
+  "BBD Bagh": "বিবিডি বাগ", "VIP Road": "ভিআইপি রোড",
+  "NSC Airport": "এনএসসি বিমানবন্দর", "Jadavpur": "যাদবপুর",
+  "Gariahat": "গড়িয়াহাট", "Dunlop": "ডানলপ", "Shyambazar": "শ্যামবাজার",
+  "Paradise": "প্যারাডাইস", "Mehdipatnam": "মেহদিপাটনাম",
+  "Patancheru": "পাটানচেরু", "Uppal": "উপ্পল",
+  "Mehrauli": "মেহরৌলি", "Akshardham": "অক্ষরধাম",
+  "Sion": "সায়ন", "Vashi": "বাশি", "Wadala": "ওয়াডালা",
+  "Thane Stn": "থানে স্টেশন", "Banashankari": "বনশঙ্করী",
+  "Koramangala": "কোরমঙ্গলা", "Velachery": "ভেলাচেরি",
+  "Porur": "পোরুর", "Pimpri": "পিম্পরি", "Katraj": "কাত্রজ",
+  "Naroda": "নরোডা", "Kankaria": "কাঁকারিয়া",
 };
 
 const mr: PlaceDict = {
