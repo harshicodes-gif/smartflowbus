@@ -342,6 +342,19 @@ const mr: PlaceDict = {
   "Howrah Stn": "हावडा स्टेशन", "Salt Lake": "सॉल्ट लेक",
   "Lal Darwaja": "लाल दरवाजा", "Vastrapur": "वस्त्रापूर",
   "Maninagar": "मणिनगर", "Bopal": "बोपल",
+  "Hadapsar": "हडपसर", "Magarpatta": "मगरपट्टा", "Pimpri": "पिंपरी",
+  "Katraj": "कात्रज", "Nigdi": "निगडी", "Wagholi": "वाघोली",
+  "Viman Nagar": "विमान नगर", "Warje": "वारजे",
+  "CST": "सीएसटी", "Fort": "फोर्ट", "Mantralaya": "मंत्रालय",
+  "Sion": "सायन", "Jogeshwari": "जोगेश्वरी", "Vashi": "वाशी",
+  "Mankhurd": "मानखुर्द", "Chembur": "चेंबूर", "Wadala": "वडाळा",
+  "Mulund": "मुलुंड", "Bhandup": "भांडुप", "Airoli": "ऐरोली",
+  "Thane Stn": "ठाणे स्टेशन",
+  "Paradise": "पॅराडाइज", "Mehdipatnam": "मेहदीपटनम",
+  "Patancheru": "पाटणचेरू", "Uppal": "उप्पल",
+  "Mehrauli": "मेहरौली", "Banashankari": "बनशंकरी",
+  "Koramangala": "कोरमंगला", "Velachery": "वेलचेरी",
+  "Naroda": "नरोडा", "Kankaria": "कांकरिया",
 };
 
 const ur: PlaceDict = {
