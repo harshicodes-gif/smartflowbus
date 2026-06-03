@@ -58,6 +58,52 @@ const hi: PlaceDict = {
   "Navrangpura": "नवरंगपुरा", "IIM": "आईआईएम", "Vastrapur": "वस्त्रापुर",
   "Maninagar": "मनीनगर", "Kalupur": "कालूपुर", "Paldi": "पालड़ी",
   "Prahlad Nagar": "प्रह्लाद नगर", "Bopal": "बोपल",
+  // Newly added Hyderabad
+  "Paradise": "पैराडाइज़", "RTC X Roads": "आरटीसी एक्स रोड्स",
+  "Afzalgunj": "अफ़ज़लगंज", "Mehdipatnam": "मेहदीपटनम",
+  "Lakdikapul": "लकड़ी का पुल", "Khairatabad": "खैरताबाद",
+  "Patancheru": "पटनचेरु", "Lingampally": "लिंगमपल्ली",
+  "Uppal": "उप्पल", "Tarnaka": "तारनाका",
+  // Newly added Delhi
+  "Anand Vihar ISBT": "आनंद विहार आईएसबीटी", "Akshardham": "अक्षरधाम",
+  "Nizamuddin": "निज़ामुद्दीन", "Greater Kailash": "ग्रेटर कैलाश",
+  "Mehrauli": "महरौली", "Mori Gate": "मोरी गेट", "Tis Hazari": "तीस हज़ारी",
+  "Punjabi Bagh": "पंजाबी बाग", "Uttam Nagar": "उत्तम नगर",
+  "Najafgarh": "नजफगढ़", "Shivaji Stadium": "शिवाजी स्टेडियम",
+  "INA": "आईएनए", "Okhla": "ओखला", "Badarpur": "बदरपुर",
+  "Sarai Kale Khan": "सराय काले खां", "Azadpur": "आज़ादपुर",
+  "Rohini Sec 18": "रोहिणी सेक्टर 18",
+  // Newly added Mumbai
+  "CST": "सीएसटी", "Fort": "फोर्ट", "Mantralaya": "मंत्रालय",
+  "Sion": "सायन", "Jogeshwari": "जोगेश्वरी",
+  "Vashi": "वाशी", "Mankhurd": "मानखुर्द", "Chembur": "चेम्बूर",
+  "Wadala": "वडाला", "Mulund": "मुलुंड", "Bhandup": "भांडुप",
+  "Airoli": "ऐरोली", "Thane Stn": "ठाणे स्टेशन",
+  // Newly added Bengaluru
+  "Banashankari": "बनशंकरी", "Yeshwantpur": "यशवंतपुर",
+  "Malleshwaram": "मल्लेश्वरम", "HSR Layout": "एचएसआर लेआउट",
+  "Sarjapur": "सरजापुर", "Koramangala": "कोरमंगला", "ITPL": "आईटीपीएल",
+  "Lalbagh": "लालबाग", "BTM Layout": "बीटीएम लेआउट",
+  "Bommanahalli": "बोम्मनहल्ली",
+  // Newly added Chennai
+  "Parrys": "पैरीज़", "Mount Road": "माउंट रोड", "Velachery": "वेलाचेरी",
+  "Triplicane": "त्रिप्लिकेन", "Nungambakkam": "नुंगमबक्कम",
+  "Vadapalani": "वडपलनी", "Porur": "पोरूर", "Avadi": "अवाड़ी",
+  "Ambattur": "अंबत्तूर", "Medavakkam": "मेडवक्कम",
+  "Sholinganallur": "शोलिंगनल्लूर", "Kelambakkam": "केलंबक्कम",
+  // Newly added Kolkata
+  "BBD Bagh": "बीबीडी बाग", "VIP Road": "वीआईपी रोड",
+  "NSC Airport": "एनएससी हवाई अड्डा", "Jadavpur": "जादवपुर",
+  "Gariahat": "गरियाहाट", "Dunlop": "डनलप", "Shyambazar": "श्यामबाज़ार",
+  // Newly added Pune
+  "Hadapsar": "हडपसर", "Magarpatta": "मगरपट्टा", "Pimpri": "पिंपरी",
+  "Katraj": "कात्रज", "Nigdi": "निगडी", "Wagholi": "वाघोली",
+  "Viman Nagar": "विमान नगर", "Warje": "वारजे",
+  // Newly added Ahmedabad
+  "Sarkhej": "सरखेज", "Vasna": "वासना", "Naroda": "नरोडा",
+  "Chandkheda": "चांदखेड़ा", "Sabarmati": "साबरमती",
+  "RTO Cir": "आरटीओ सर्कल", "Vatva": "वटवा",
+  "Thaltej": "थलतेज", "Kankaria": "कांकरिया",
 };
 
 const te: PlaceDict = {
