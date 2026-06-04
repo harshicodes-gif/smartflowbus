@@ -1,7 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Bus, MapPin, Shield, Gauge, LayoutDashboard, Home, Globe, Building2, Route as RouteIcon } from "lucide-react";
+import { Bus, MapPin, Shield, Gauge, LayoutDashboard, Home, Globe, Building2, Route as RouteIcon, User as UserIcon, LogIn } from "lucide-react";
 import { LANGUAGES, useI18n } from "@/lib/i18n";
 import { CITIES } from "@/lib/buses";
+import { useAuth } from "@/lib/auth";
 import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
@@ -9,6 +10,7 @@ import { Button } from "@/components/ui/button";
 
 export function Header() {
   const { t, lang, setLang, city, setCity, cityName } = useI18n();
+  const { user, signOut } = useAuth();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const links = [
     { to: "/", label: t("nav_home"), icon: Home },
@@ -97,6 +99,27 @@ export function Header() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <UserIcon className="h-4 w-4" />
+                  <span className="hidden max-w-[120px] truncate sm:inline">{user.email}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link to="/account">My account</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => signOut()}>Sign out</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button asChild variant="default" size="sm" className="gap-2">
+              <Link to="/auth"><LogIn className="h-4 w-4" /> <span className="hidden sm:inline">Sign in</span></Link>
+            </Button>
+          )}
         </div>
       </div>
 

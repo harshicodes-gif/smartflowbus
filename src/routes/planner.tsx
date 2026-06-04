@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowRight, MapPin, Route as RouteIcon, Search, Building2, ChevronDown, Repeat } from "lucide-react";
+import { ArrowRight, MapPin, Route as RouteIcon, Search, Building2, ChevronDown, Repeat, Bookmark } from "lucide-react";
+import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -9,10 +10,12 @@ import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { useI18n } from "@/lib/i18n";
+import { useAuth } from "@/lib/auth";
 import { useLiveBuses } from "@/lib/hooks";
 import { ROUTES, CITIES, getCity, haversineKm, type BusRoute, type CityId } from "@/lib/buses";
 import { translatePlace } from "@/lib/places";
 import { BusMap } from "@/components/BusMap";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/planner")({
   head: () => ({
@@ -150,9 +153,12 @@ function planRoutes(fromName: string, toName: string, cityRoutes: BusRoute[], ma
 
 function Planner() {
   const { t, lang, city, setCity, cityName } = useI18n();
+  const { user } = useAuth();
   const buses = useLiveBuses(2000, city);
   const cityRoutes = useMemo(() => ROUTES.filter((r) => r.cityId === city), [city]);
   const cityCenter = getCity(city).center;
+  const [label, setLabel] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const [fromQ, setFromQ] = useState("");
   const [toQ, setToQ] = useState("");
@@ -259,6 +265,46 @@ function Planner() {
           </p>
         )}
       </Card>
+
+      {submitted && fromStop && toStop && options.length > 0 && (
+        <Card className="mt-4 flex flex-wrap items-center gap-2 p-3">
+          {user ? (
+            <>
+              <Input
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
+                placeholder="Nickname (e.g. Home → Office)"
+                className="max-w-xs"
+              />
+              <Button
+                size="sm"
+                className="gap-2"
+                disabled={saving}
+                onClick={async () => {
+                  setSaving(true);
+                  const { error } = await supabase.from("saved_trips").insert({
+                    user_id: user.id,
+                    city_id: city,
+                    label: label || null,
+                    from_stop: fromStop.name,
+                    to_stop: toStop.name,
+                    route_data: selected ? { legs: selected.legs.map((l) => ({ routeId: l.route.id, fromIdx: l.fromIdx, toIdx: l.toIdx })) } : null,
+                  });
+                  setSaving(false);
+                  if (error) toast.error(error.message);
+                  else { toast.success("Trip saved"); setLabel(""); }
+                }}
+              >
+                <Bookmark className="h-4 w-4" /> Save trip
+              </Button>
+            </>
+          ) : (
+            <div className="text-sm text-muted-foreground">
+              <Link to="/auth" className="font-medium text-primary underline">Sign in</Link> to save this trip.
+            </div>
+          )}
+        </Card>
+      )}
 
       {submitted && fromStop && toStop && (
         <div className="mt-6 grid gap-4 lg:grid-cols-5">
