@@ -14,7 +14,9 @@ import { Route as StopsRouteImport } from './routes/stops'
 import { Route as SafetyRouteImport } from './routes/safety'
 import { Route as PlannerRouteImport } from './routes/planner'
 import { Route as DriverRouteImport } from './routes/driver'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 
 const TrackingRoute = TrackingRouteImport.update({
@@ -42,9 +44,19 @@ const DriverRoute = DriverRouteImport.update({
   path: '/driver',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -55,7 +67,9 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
   '/driver': typeof DriverRoute
   '/planner': typeof PlannerRoute
   '/safety': typeof SafetyRoute
@@ -64,7 +78,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
   '/driver': typeof DriverRoute
   '/planner': typeof PlannerRoute
   '/safety': typeof SafetyRoute
@@ -74,7 +90,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
   '/driver': typeof DriverRoute
   '/planner': typeof PlannerRoute
   '/safety': typeof SafetyRoute
@@ -85,7 +103,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/account'
     | '/admin'
+    | '/auth'
     | '/driver'
     | '/planner'
     | '/safety'
@@ -94,7 +114,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/account'
     | '/admin'
+    | '/auth'
     | '/driver'
     | '/planner'
     | '/safety'
@@ -103,7 +125,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/account'
     | '/admin'
+    | '/auth'
     | '/driver'
     | '/planner'
     | '/safety'
@@ -113,7 +137,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountRoute: typeof AccountRoute
   AdminRoute: typeof AdminRoute
+  AuthRoute: typeof AuthRoute
   DriverRoute: typeof DriverRoute
   PlannerRoute: typeof PlannerRoute
   SafetyRoute: typeof SafetyRoute
@@ -158,11 +184,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DriverRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -177,7 +217,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountRoute: AccountRoute,
   AdminRoute: AdminRoute,
+  AuthRoute: AuthRoute,
   DriverRoute: DriverRoute,
   PlannerRoute: PlannerRoute,
   SafetyRoute: SafetyRoute,
@@ -187,3 +229,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
