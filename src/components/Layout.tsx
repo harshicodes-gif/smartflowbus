@@ -1,7 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Bus, MapPin, Shield, Gauge, LayoutDashboard, Home, Globe, Building2, Route as RouteIcon } from "lucide-react";
+import { Bus, MapPin, Shield, Gauge, LayoutDashboard, Home, Globe, Building2, Route as RouteIcon, User as UserIcon, LogIn } from "lucide-react";
 import { LANGUAGES, useI18n } from "@/lib/i18n";
 import { CITIES } from "@/lib/buses";
+import { useAuth } from "@/lib/auth";
 import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
@@ -9,6 +10,7 @@ import { Button } from "@/components/ui/button";
 
 export function Header() {
   const { t, lang, setLang, city, setCity, cityName } = useI18n();
+  const { user, signOut } = useAuth();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const links = [
     { to: "/", label: t("nav_home"), icon: Home },
