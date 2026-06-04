@@ -266,6 +266,46 @@ function Planner() {
         )}
       </Card>
 
+      {submitted && fromStop && toStop && options.length > 0 && (
+        <Card className="mt-4 flex flex-wrap items-center gap-2 p-3">
+          {user ? (
+            <>
+              <Input
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
+                placeholder="Nickname (e.g. Home → Office)"
+                className="max-w-xs"
+              />
+              <Button
+                size="sm"
+                className="gap-2"
+                disabled={saving}
+                onClick={async () => {
+                  setSaving(true);
+                  const { error } = await supabase.from("saved_trips").insert({
+                    user_id: user.id,
+                    city_id: city,
+                    label: label || null,
+                    from_stop: fromStop.name,
+                    to_stop: toStop.name,
+                    route_data: selected ? { legs: selected.legs.map((l) => ({ routeId: l.route.id, fromIdx: l.fromIdx, toIdx: l.toIdx })) } : null,
+                  });
+                  setSaving(false);
+                  if (error) toast.error(error.message);
+                  else { toast.success("Trip saved"); setLabel(""); }
+                }}
+              >
+                <Bookmark className="h-4 w-4" /> Save trip
+              </Button>
+            </>
+          ) : (
+            <div className="text-sm text-muted-foreground">
+              <Link to="/auth" className="font-medium text-primary underline">Sign in</Link> to save this trip.
+            </div>
+          )}
+        </Card>
+      )}
+
       {submitted && fromStop && toStop && (
         <div className="mt-6 grid gap-4 lg:grid-cols-5">
           <div className="space-y-3 lg:col-span-2">
