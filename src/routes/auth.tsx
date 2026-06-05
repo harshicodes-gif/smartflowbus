@@ -101,6 +101,7 @@ function AuthPage() {
           <TabsContent value="signin">
             <form onSubmit={signIn} className="space-y-3 pt-3">
               <EmailPwFields email={email} setEmail={setEmail} password={password} setPassword={setPassword} />
+              <RememberRow remember={remember} setRemember={setRemember} />
               <Button type="submit" className="w-full gap-2" disabled={busy}>
                 <LogIn className="h-4 w-4" /> Sign in
               </Button>
@@ -110,6 +111,7 @@ function AuthPage() {
           <TabsContent value="signup">
             <form onSubmit={signUp} className="space-y-3 pt-3">
               <EmailPwFields email={email} setEmail={setEmail} password={password} setPassword={setPassword} />
+              <RememberRow remember={remember} setRemember={setRemember} />
               <Button type="submit" className="w-full gap-2" disabled={busy}>
                 <UserPlus className="h-4 w-4" /> Create account
               </Button>
