@@ -29,7 +29,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(data.session);
       setLoading(false);
     });
-    return () => sub.subscription.unsubscribe();
+
+    // If user opted out of "remember me", sign out when the tab closes.
+    const onUnload = () => {
+      try {
+        if (localStorage.getItem("sf_remember_me") !== "1") {
+          void supabase.auth.signOut();
+        }
+      } catch { /* ignore */ }
+    };
+    window.addEventListener("beforeunload", onUnload);
+    return () => {
+      sub.subscription.unsubscribe();
+      window.removeEventListener("beforeunload", onUnload);
+    };
   }, []);
 
   return (
