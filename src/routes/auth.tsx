@@ -35,6 +35,7 @@ function AuthPage() {
   const { user } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(true);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -44,6 +45,7 @@ function AuthPage() {
   const signIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
+    applyRemember(remember);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
     if (error) toast.error(error.message);
@@ -56,6 +58,7 @@ function AuthPage() {
   const signUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
+    applyRemember(remember);
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -68,6 +71,7 @@ function AuthPage() {
 
   const google = async () => {
     setBusy(true);
+    applyRemember(remember);
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin + "/account",
     });
@@ -78,6 +82,7 @@ function AuthPage() {
     }
     if (!result.redirected) navigate({ to: "/account" });
   };
+
 
   return (
     <div className="mx-auto flex max-w-md flex-col px-4 py-12">
