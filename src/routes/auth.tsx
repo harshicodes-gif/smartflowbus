@@ -6,10 +6,19 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/lib/auth";
+
+const REMEMBER_KEY = "sf_remember_me";
+function applyRemember(remember: boolean) {
+  try {
+    if (remember) localStorage.setItem(REMEMBER_KEY, "1");
+    else localStorage.removeItem(REMEMBER_KEY);
+  } catch { /* ignore */ }
+}
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -26,6 +35,7 @@ function AuthPage() {
   const { user } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(true);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -35,6 +45,7 @@ function AuthPage() {
   const signIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
+    applyRemember(remember);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
     if (error) toast.error(error.message);
@@ -47,6 +58,7 @@ function AuthPage() {
   const signUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
+    applyRemember(remember);
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -59,6 +71,7 @@ function AuthPage() {
 
   const google = async () => {
     setBusy(true);
+    applyRemember(remember);
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin + "/account",
     });
@@ -69,6 +82,7 @@ function AuthPage() {
     }
     if (!result.redirected) navigate({ to: "/account" });
   };
+
 
   return (
     <div className="mx-auto flex max-w-md flex-col px-4 py-12">
@@ -87,6 +101,7 @@ function AuthPage() {
           <TabsContent value="signin">
             <form onSubmit={signIn} className="space-y-3 pt-3">
               <EmailPwFields email={email} setEmail={setEmail} password={password} setPassword={setPassword} />
+              <RememberRow remember={remember} setRemember={setRemember} />
               <Button type="submit" className="w-full gap-2" disabled={busy}>
                 <LogIn className="h-4 w-4" /> Sign in
               </Button>
@@ -96,6 +111,7 @@ function AuthPage() {
           <TabsContent value="signup">
             <form onSubmit={signUp} className="space-y-3 pt-3">
               <EmailPwFields email={email} setEmail={setEmail} password={password} setPassword={setPassword} />
+              <RememberRow remember={remember} setRemember={setRemember} />
               <Button type="submit" className="w-full gap-2" disabled={busy}>
                 <UserPlus className="h-4 w-4" /> Create account
               </Button>
@@ -145,5 +161,16 @@ function EmailPwFields({
         </div>
       </div>
     </>
+  );
+}
+
+function RememberRow({ remember, setRemember }: { remember: boolean; setRemember: (v: boolean) => void }) {
+  return (
+    <div className="flex items-center justify-between gap-2 pt-1">
+      <label className="flex cursor-pointer items-center gap-2 text-sm">
+        <Checkbox checked={remember} onCheckedChange={(v) => setRemember(v === true)} id="remember" />
+        <span>Keep me signed in on this device</span>
+      </label>
+    </div>
   );
 }
