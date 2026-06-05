@@ -163,3 +163,14 @@ function EmailPwFields({
     </>
   );
 }
+
+function RememberRow({ remember, setRemember }: { remember: boolean; setRemember: (v: boolean) => void }) {
+  return (
+    <div className="flex items-center justify-between gap-2 pt-1">
+      <label className="flex cursor-pointer items-center gap-2 text-sm">
+        <Checkbox checked={remember} onCheckedChange={(v) => setRemember(v === true)} id="remember" />
+        <span>Keep me signed in on this device</span>
+      </label>
+    </div>
+  );
+}
